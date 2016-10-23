@@ -1,6 +1,6 @@
 package assign1;
 
-
+//Testing commit
 import com.fasterxml.jackson.databind.JsonNode;
 
 public class DictData {
@@ -31,3 +31,5 @@ public void setMeaning(JsonNode meaning) {
 }
 
 }
+
+
