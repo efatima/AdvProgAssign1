@@ -13,7 +13,15 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
-import java.util.Scanner; 
+import java.util.Scanner;
+
+import javax.swing.JFrame;
+
+import org.jgraph.JGraph;
+import org.jgrapht.UndirectedGraph;
+import org.jgrapht.ext.JGraphModelAdapter;
+import org.jgrapht.graph.DefaultEdge;
+import org.jgrapht.graph.SimpleGraph;
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -25,7 +33,9 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 public class Operations {
 	
 	private final static HashMap<String, ArrayList<DictData>> dict = new HashMap<String, ArrayList<DictData>>();
+	static UndirectedGraph<String, DefaultEdge> graph = new SimpleGraph<String, DefaultEdge>(DefaultEdge.class);
 
+	
 	public static void takeInput()  {
 		String start ="hell";
 		String end = "bell";
@@ -61,6 +71,14 @@ public class Operations {
      			else if(!List.contains(wordNode)) {//if the node doesn't already exist then push
 //	 				System.out.println("Key and Data EXISTS! Appending...");				
 	 				List.add(wordNode);
+	 				
+	 			   for(DictData index : List){
+	 				    if(index!=wordNode){
+		 			    graph.addEdge(index.getWord(), wordNode.getWord());//for every new node added in the List, make edges between that node and all existing ones under the same key 
+	 				    }
+	 		        }
+
+
 
      			}
 			}
@@ -107,6 +125,8 @@ public class Operations {
     	       
 //    	       String currentWord = test[j];
     	       String currentWord = newNode.getWord();
+    	       graph.addVertex(newNode.getWord());
+
     	       
     	       int length = currentWord.length();
 
@@ -128,7 +148,13 @@ public class Operations {
          
     	       
 //	           System.out.println("Key: " + newNode.getWord() + "\tValue:" + newNode.getMeaning());
-
+               printHashMap();
+               try {
+				displayGraph();
+			} catch (InterruptedException e) {
+				// TODO Auto-generated catch block
+				e.printStackTrace();
+			}
 
 	       }
 //	}
@@ -146,6 +172,29 @@ public class Operations {
 		            System.out.print(" \n");
 
  		    }
+
+	}
+	
+	public static void displayGraph() throws InterruptedException{
+	    System.out.println("In display graph");
+
+		JFrame frame = new JFrame();
+		frame.setSize(400, 400);
+	    JGraph jgraph = new JGraph( new JGraphModelAdapter<String, DefaultEdge>( graph) );
+	    frame.getContentPane().add(jgraph);
+	    frame.setVisible(true);
+	    System.out.println("graph: " + graph.toString());
+	    System.out.println("edges of Mabble: " + graph.edgesOf("mabble"));
+
+
+//	    System.out.println(graph);
+//	    System.out.println(jgraph);
+//	    System.out.println("graphs printed");
+
+//	    while (true) {
+//	    	Thread.sleep(2000);
+//	    }
+
 
 	}
 	
