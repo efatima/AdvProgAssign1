@@ -7,12 +7,20 @@ public class DictData {
 	
    private String word;
    private JsonNode meaning;
+   private String mean;
    
    
-   DictData(String word, JsonNode meaning){
-	   this.word = word;
-	   this.meaning = meaning;
-   }
+//   DictData(String word, JsonNode meaning){
+//	   this.word = word;
+//	   this.meaning = meaning;
+//   }
+
+public DictData(String word, String word2) {
+	// TODO Auto-generated constructor stub
+	this.word = word;
+	this.mean = word2;
+
+}
 
 public String getWord() {
 	return word;
