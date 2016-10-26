@@ -115,7 +115,7 @@ public class Operations {
 
 	       Iterator<Map.Entry<String,JsonNode>> fieldsIterator = rootNode.fields();
 	       while (fieldsIterator.hasNext()) {
-//	       String [] test ={"hello", "test", "happy", "nappy", "mappy", "yello", "best", "nest", "jest", "neighbour", "vest"};
+//	       String [] test ={"hell", "test", "happy", "yes", "set", "let", "best", "nest", "bet", "neighbour", "vest"};
 //	       for(int j=0; j<test.length; j++){
 
 	           Map.Entry<String,JsonNode> field = fieldsIterator.next();
@@ -184,16 +184,8 @@ public class Operations {
 	    frame.getContentPane().add(jgraph);
 	    frame.setVisible(true);
 	    System.out.println("graph: " + graph.toString());
-	    System.out.println("edges of Mabble: " + graph.edgesOf("mabble"));
+//	    System.out.println("edges of MABBLE: " + graph.edgesOf("RABBLE"));
 
-
-//	    System.out.println(graph);
-//	    System.out.println(jgraph);
-//	    System.out.println("graphs printed");
-
-//	    while (true) {
-//	    	Thread.sleep(2000);
-//	    }
 
 
 	}

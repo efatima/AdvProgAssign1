@@ -15,12 +15,12 @@ public class DictData {
 	   this.meaning = meaning;
    }
 
-//public DictData(String word, String word2) {
-//	// TODO Auto-generated constructor stub
-//	this.word = word;
-//	this.mean = word2;
-//
-//}
+public DictData(String word, String word2) {
+	// TODO Auto-generated constructor stub
+	this.word = word;
+	this.mean = word2;
+
+}
 
 public String getWord() {
 	return word;
