@@ -24,11 +24,7 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 
 public class Operations {
 	
-	private static ArrayList<DictData> wordNode = new ArrayList<DictData>();
-//	private final static HashMap<StringBuilder, ArrayList<DictData>> dict = new HashMap<StringBuilder, ArrayList<DictData>>();
-	private final static HashMap<String, ArrayList<String>> dict = new HashMap<String, ArrayList<String>>();
-
-//    private final List<DictData> nodeQ= new LinkedList<>();
+	private final static HashMap<String, ArrayList<DictData>> dict = new HashMap<String, ArrayList<DictData>>();
 
 	public static void takeInput()  {
 		String start ="hell";
@@ -51,38 +47,19 @@ public class Operations {
 	}
 	
 	
-	public synchronized static void addToList(String word, String wordNode) {
+	public synchronized static void addToList(String word, DictData wordNode) {
 		System.out.println("my key: "+word);
-//		String key = dict.get(word);
-
-//	    ArrayList<DictData> List = dict.get(word);
-	    ArrayList<String> List = dict.get(word);
-
-//		System.out.println(wordNodeList);
-	    
-	    
+	    ArrayList<DictData> List = dict.get(word);	    
 	    
 	    if (dict.containsKey(word)){
-	 			System.out.println("KEY FOUND.. exists");
-//
+//	 			System.out.println("KEY FOUND.. exists");
+
      			if(List == null) {
-	 				System.out.println("Key exists but List is empty");
-//	 	            List = new ArrayList<String>();
-//	 	            wordNodeList.add(wordNode);
-//	 	 	         dict.put(word, wordNodeList);
-//	 	 			System.out.println("KEY Added");
-////	 	 			System.out.println(dict.get(word));
-//	 	 			
-//	 		    }
-//	 			
-//	 			if(!wordNodeList.contains(wordNode)){
-//		        	wordNodeList.add(wordNode);
-//					System.out.println("Second if");
-//
+	 				System.out.println("Key exists but List is empty"); //which won't be the case for us
 		        }
      			
-     			else{
-	 				System.out.println("Key exists+ data exists too :D");
+     			else if(!List.contains(wordNode)) {//if the node doesn't already exist then push
+//	 				System.out.println("Key and Data EXISTS! Appending...");				
 	 				List.add(wordNode);
 
      			}
@@ -90,60 +67,13 @@ public class Operations {
 	    else{
 	    	//key doesn't exist
 	    	if(List == null) {
- 				System.out.println("Else.. first if");
- 	            List = new ArrayList<String>();
+ 	            List = new ArrayList<DictData>();
  	            List.add(wordNode); 			
 	 	        dict.put(word, List);
-	 	 		System.out.println("KEY Added");
-
-
+//	 	 		System.out.println("New KEY Added");
 	    	}
 
 	    }    	
-//	    	}
-//
-//
-// 	 	         dict.put(word, wordNodeList);
-// 	 			System.out.println("KEY Added");
-//// 	 			System.out.println(dict.get(word));
- 	 			
-// 		    }
- 			
-// 			if(!wordNodeList.contains(wordNode)){
-//	        	wordNodeList.add(wordNode);
-//				System.out.println("Else.....Second if");
-//
-//	        }
-
-	   
-	
-//}
-
-
-
-	    // if list does not exist create it
-//	    if(wordNodeList == null) {
-//			System.out.println("Key doesn't exist");
-//            wordNodeList = new ArrayList<DictData>();
-//            wordNodeList.add(wordNode);
-// 	         dict.put(word, wordNodeList);
-// 			System.out.println("KEY Added");
-// 			System.out.println(dict.get(word));
-// 			
-//	    } else {
-//			System.out.println("Key exists!");
-//
-//	        // add if wordNode isn't already in list --avoiding duplicates
-//	        if(!wordNodeList.contains(wordNode)){
-////	        	wordNodeList.add(wordNode);
-//	        }
-//	    }
-//	    
-//		System.out.println(dict.entrySet());
-		
-
-
-//	}
 	
 	}
 	
@@ -166,80 +96,58 @@ public class Operations {
 		}  
 
 	       Iterator<Map.Entry<String,JsonNode>> fieldsIterator = rootNode.fields();
-//	       while (fieldsIterator.hasNext()) {
+	       while (fieldsIterator.hasNext()) {
 //	       String [] test ={"hello", "test", "happy", "nappy", "mappy", "yello", "best", "nest", "jest", "neighbour", "vest"};
-	       String [] test ={"ha", "ho"};
+//	       for(int j=0; j<test.length; j++){
 
-//	       int m = 0;
-	       for(int j=0; j<test.length; j++){
-
-//	           Map.Entry<String,JsonNode> field = fieldsIterator.next();
-//               System.out.println("Key: " + field.getKey() + "\tValue:" + field.getValue());
-//    	       DictData newNode = new DictData(field.getKey(), field.getValue());
-	           DictData newNode = new DictData(test[j], "blah blah");
-
-        //     wordNode.add(newNode);
+	           Map.Entry<String,JsonNode> field = fieldsIterator.next();
+//             System.out.println("Key: " + field.getKey() + "\tValue:" + field.getValue());
+    	       DictData newNode = new DictData(field.getKey(), field.getValue());
+//	           DictData newNode = new DictData(test[j], "blah blah");
     	       
-    	       String currentWord = test[j];
-
-//    	       String currentWord = newNode.getWord();
-//    	       char[] word =   currentWord.toCharArray();
-//    	       System.out.println(currentWord.length());
+//    	       String currentWord = test[j];
+    	       String currentWord = newNode.getWord();
     	       
     	       int length = currentWord.length();
 
     	       for (int i = 0; i < length; i++){
-//        	       StringBuilder word = new StringBuilder(currentWord);
-//        	        word.setCharAt(i, '_');
-//        	        System.out.println(word);
     	    	   char[] word =   currentWord.toCharArray();
     	    	   word[i] = '_';
         	       
-//        	        addToList(word, newNode);
-    	    	   
-//        	       System.out.println(String.valueOf(word));
-
-        	        addToList(String.valueOf(word), test[j]);
-
-        	        
-        			        	        
-        	        //check if key exists in map
-        	            //if true push actual word in that array list against key
-        	           
-        	            //else if false create key and then push word 
-        	        
-        	        
-        	        //continue loop for until word length is complete;
-
+        	        addToList(String.valueOf(word), newNode);
+//        	        addToList(String.valueOf(word), test[j]);
     	    	   
     	       }
     	       
-    	       for (Entry<String, ArrayList<String>> entry  : dict.entrySet()) {
-   		        System.out.print(entry.getKey()+" -----> ");
-   		        for(String fruitNo : entry.getValue()){
-//   		            System.out.print(fruitNo+" ");
-   		            System.out.print(fruitNo+" ");
-//   		            System.out.print(fruitNo.getMeaning()+" ");
-
-   		        }
-		            System.out.print(" \n");
-
-//   		        System.out.println();
-   		    }
-
+    	     
     	       
     	       
     	       
 	       }  
+    	     
+         
     	       
-    	       
-//    	       dict.add(field.getKey());//adding words to HashSet
 //	           System.out.println("Key: " + newNode.getWord() + "\tValue:" + newNode.getMeaning());
 
 
 	       }
 //	}
 	
+	
+	public static void printHashMap(){
+		  System.out.print("Result...");
+
+	       for (Entry<String, ArrayList<DictData>> entry  : dict.entrySet()) {
+ 		        System.out.print(entry.getKey()+" -----> ");
+ 		        for(DictData index : entry.getValue()){
+ 		            System.out.print(index.getWord()+" ");
+
+ 		        }
+		            System.out.print(" \n");
+
+ 		    }
+
+	}
 	
 	public static String readJsonFile() throws JsonParseException, JsonMappingException, IOException{//Reads a JSON file, saves the data in the form of a string and returns it
 	   String line = null;

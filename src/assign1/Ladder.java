@@ -39,7 +39,7 @@ public class Ladder {
 		String json = Operations.readJsonFile(); //Reads JSON file and saves it in the form of a string
 		Operations.parse(json); //converts data from String version JSON to objects of DictData
 		
-		Operations.takeInput();
+//		Operations.takeInput();
 
 				
 	}
