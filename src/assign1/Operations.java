@@ -13,7 +13,9 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
+import java.util.Queue;
 import java.util.Scanner;
+import java.util.Set;
 
 import javax.swing.JFrame;
 
@@ -22,6 +24,14 @@ import org.jgrapht.UndirectedGraph;
 import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
+import org.jgrapht.traverse.BreadthFirstIterator;
+import org.jgrapht.traverse.GraphIterator;
+import org.jgrapht.alg.*;
+import org.jgrapht.Graphs;
+
+
+
+
 
 import com.fasterxml.jackson.core.JsonFactory;
 import com.fasterxml.jackson.core.JsonParseException;
@@ -30,10 +40,15 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
+import sun.security.provider.certpath.Vertex;
+
 public class Operations {
 	
 	private final static HashMap<String, ArrayList<DictData>> dict = new HashMap<String, ArrayList<DictData>>();
-	static UndirectedGraph<String, DefaultEdge> graph = new SimpleGraph<String, DefaultEdge>(DefaultEdge.class);
+	static UndirectedGraph<DictData, DefaultEdge> graph = new SimpleGraph<DictData, DefaultEdge>(DefaultEdge.class);
+	static Integer longestChain =0;
+	static List<Integer>  pathLengths = new LinkedList<Integer>();
+
 
 	
 	public static void takeInput()  {
@@ -74,7 +89,7 @@ public class Operations {
 	 				
 	 			   for(DictData index : List){
 	 				    if(index!=wordNode){
-		 			    graph.addEdge(index.getWord(), wordNode.getWord());//for every new node added in the List, make edges between that node and all existing ones under the same key 
+		 			    graph.addEdge(index, wordNode);//for every new node added in the List, make edges between that node and all existing ones under the same key 
 	 				    }
 	 		        }
 
@@ -113,20 +128,23 @@ public class Operations {
 			e.printStackTrace();
 		}  
 
-	       Iterator<Map.Entry<String,JsonNode>> fieldsIterator = rootNode.fields();
-	       while (fieldsIterator.hasNext()) {
-//	       String [] test ={"hell", "test", "happy", "yes", "set", "let", "best", "nest", "bet", "neighbour", "vest"};
-//	       for(int j=0; j<test.length; j++){
+//	       Iterator<Map.Entry<String,JsonNode>> fieldsIterator = rootNode.fields();
+//	       while (fieldsIterator.hasNext()) {
+//	       String [] test ={"hope", "pope", "nope", "pole", "set", "note", "post", "nest", "bet", "neighbour", "vest"};
+	       String [] test ={"word", "dare", "work", "barn", "dark", "ware", "wore", "worn"};
 
-	           Map.Entry<String,JsonNode> field = fieldsIterator.next();
+	       for(int j=0; j<test.length; j++){
+
+//	           Map.Entry<String,JsonNode> field = fieldsIterator.next();
 //             System.out.println("Key: " + field.getKey() + "\tValue:" + field.getValue());
-    	       DictData newNode = new DictData(field.getKey(), field.getValue());
-//	           DictData newNode = new DictData(test[j], "blah blah");
+//    	       DictData newNode = new DictData(field.getKey(), field.getValue());
+	           DictData newNode = new DictData(test[j], "blah blah");
     	       
 //    	       String currentWord = test[j];
     	       String currentWord = newNode.getWord();
-    	       graph.addVertex(newNode.getWord());
+    	       graph.addVertex(newNode);
 
+    	       
     	       
     	       int length = currentWord.length();
 
@@ -160,6 +178,8 @@ public class Operations {
 //	}
 	
 	
+	
+	
 	public static void printHashMap(){
 		  System.out.print("Result...");
 
@@ -173,23 +193,144 @@ public class Operations {
 
  		    }
 
+//	       BFS("word","barn"); 
+	       calculateAllMinChains();
+	       findNoChainWords();
+	       calculateFrequencyDistribution();
 	}
+	
+	
 	
 	public static void displayGraph() throws InterruptedException{
 	    System.out.println("In display graph");
 
 		JFrame frame = new JFrame();
 		frame.setSize(400, 400);
-	    JGraph jgraph = new JGraph( new JGraphModelAdapter<String, DefaultEdge>( graph) );
+	    JGraph jgraph = new JGraph( new JGraphModelAdapter<DictData, DefaultEdge>( graph) );
 	    frame.getContentPane().add(jgraph);
 	    frame.setVisible(true);
-	    System.out.println("graph: " + graph.toString());
+//	    System.out.println("graph: " + graph.toString());
 //	    System.out.println("edges of MABBLE: " + graph.edgesOf("RABBLE"));
 
-
+        //BFS("word", "barn");
 
 	}
 	
+	
+	public static void calculateAllMinChains(){ //calculates minimum chains for all solvable words
+	    for(DictData index : graph.vertexSet()){
+		    for(DictData node : graph.vertexSet()){
+		    	//if both nodes aren't same && both have same length
+	    	    if (!(index.getWord().compareTo(node.getWord()) == 0) && index.getWord().length() == node.getWord().length()){
+	    	    	//Apply Breadth First Search to calculate minimum Chain
+	    	    	   BFS(index.getWord(), node.getWord());	    	    	 
+	    	     }
+    	}
+	  }
+
+		
+	}
+	
+	public static void findNoChainWords(){ //finds all words that don't have a chain i.e a graph edge connected to them
+	    for(DictData index : graph.vertexSet()){
+	    	    Set<DefaultEdge> edge = graph.edgesOf(index);
+	    	    if(edge.size()<1){
+		    	    System.out.println("\n'"+index.getWord()+"' has NO Chain");
+	    	    }   	
+	    }
+	}
+	
+	
+	public static void calculateFrequencyDistribution(){ //calculate Frequency Distribution of Chain lengths
+		   Map<Integer, Integer> freqTable = new HashMap<Integer, Integer>();
+
+         for (int i=0; i< pathLengths.size(); i++){
+        	 
+        	 if (freqTable.containsKey(pathLengths.get(i))){
+           	  freqTable.put(pathLengths.get(i), freqTable.get(pathLengths.get(i))+1);
+        		 
+        	 }
+        	 else{
+              	  freqTable.put(pathLengths.get(i), 1);
+
+        	 }
+ 	    	        	 
+         }
+ 	    System.out.println("\nFrequency Distribution Table for All Chain Lengths: ");
+
+         for (Map.Entry entry : freqTable.entrySet()) {
+        	    System.out.println("\n"+entry.getKey() + " : " + entry.getValue());
+         }
+
+	}
+	
+	
+	public static boolean BFS(String startNode, String endNode){
+	    System.out.println("In Breadth-First-Search: ");
+		Map<String, String> prev = new HashMap<String, String>();
+	    Map<DictData, Boolean> visited = new HashMap<DictData, Boolean>();
+	
+		List<String> directions = new LinkedList<String>();	
+		Queue q = new LinkedList<String>();
+		
+		DictData current = null;
+	    for(DictData index : graph.vertexSet()){
+    	    if (index.getWord().compareTo(startNode) == 0){
+    	    	System.out.println("Starting Search From: " + index.getWord());
+    	    	current = index;
+    	    }
+    	}
+	    
+	    q.add(current);
+	    
+	    visited.put(current, true);
+	    
+	    while(!q.isEmpty()){
+	        current = (DictData) q.remove();
+	        if (current.getWord().compareTo(endNode) == 0){
+	            break;
+	        }else{
+	        	DictData nextNode = null;
+	        	for(DefaultEdge e : graph.edgesOf(current)){
+	        		if (graph.getEdgeTarget(e) == current) {
+	        			nextNode = graph.getEdgeSource(e);
+	        		}
+	        		else {
+	        			nextNode = graph.getEdgeTarget(e);
+	        		}
+	            	if(!visited.containsKey(nextNode)){
+	                    q.add(nextNode);
+	                    visited.put(nextNode, true);
+	                    prev.put(nextNode.getWord(), current.getWord());
+	                }
+	            }
+	        }
+	    }
+	    if (current.getWord().compareTo(endNode)!= 0){
+	        System.out.println("Destination can't be reached since Start and End nodes aren't Connected");
+	        return false;
+	    }
+	    for(String node = endNode; node != null; node = prev.get(node)) {
+	        directions.add(node);
+	    }
+	    System.out.println("\n"+directions.toString());
+	    System.out.println("Steps: "+(directions.size()-1));//path steps
+	    Integer tempChain= directions.size()-1;
+	    pathLengths.add((directions.size()-1)); //keeps track of all path Lengths for frequency distribution	
+
+	    if(longestChain < tempChain){//keeps updating the longest chain variable as chains are being found and printed
+	    	longestChain = tempChain;
+		    System.out.println("\nLongest Chain Updated To: "+longestChain+"\n");
+
+	    }
+	    
+	    return true;
+	    
+	}	
+	
+	
+
+
 	public static String readJsonFile() throws JsonParseException, JsonMappingException, IOException{//Reads a JSON file, saves the data in the form of a string and returns it
 	   String line = null;
 	   String jsonFileName = "Dictionary.json";

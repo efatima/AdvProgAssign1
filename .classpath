@@ -2,10 +2,10 @@
 <classpath>
 	<classpathentry kind="src" path="src"/>
 	<classpathentry kind="con" path="org.eclipse.jdt.launching.JRE_CONTAINER"/>
-	<classpathentry kind="lib" path="D:/University Stuff/Adv. Prog/Assign1/jackson-core-2.8.4.jar"/>
-	<classpathentry kind="lib" path="D:/University Stuff/Adv. Prog/Assign1/jackson-databind-2.8.4.jar"/>
-	<classpathentry kind="lib" path="D:/University Stuff/Adv. Prog/Assign1/jackson-annotations-2.8.4.jar"/>
-	<classpathentry kind="lib" path="D:/University Stuff/Adv. Prog/Assign1/jgrapht.jar"/>
-	<classpathentry kind="lib" path="D:/University Stuff/Adv. Prog/Assign1/jgraph.jar"/>
+	<classpathentry kind="lib" path="jackson-core-2.8.4.jar"/>
+	<classpathentry kind="lib" path="jackson-databind-2.8.4.jar"/>
+	<classpathentry kind="lib" path="jackson-annotations-2.8.4.jar"/>
+	<classpathentry kind="lib" path="jgrapht.jar"/>
+	<classpathentry kind="lib" path="jgraph.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>
