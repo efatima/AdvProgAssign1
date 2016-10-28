@@ -1,14 +1,16 @@
 package assign1;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.File;
 import java.io.FileInputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.HashSet;
-import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -24,13 +26,6 @@ import org.jgrapht.UndirectedGraph;
 import org.jgrapht.ext.JGraphModelAdapter;
 import org.jgrapht.graph.DefaultEdge;
 import org.jgrapht.graph.SimpleGraph;
-import org.jgrapht.traverse.BreadthFirstIterator;
-import org.jgrapht.traverse.GraphIterator;
-import org.jgrapht.alg.*;
-import org.jgrapht.Graphs;
-
-
-
 
 
 import com.fasterxml.jackson.core.JsonFactory;
@@ -39,8 +34,6 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
-
-import sun.security.provider.certpath.Vertex;
 
 public class Operations {
 	
@@ -51,23 +44,27 @@ public class Operations {
 
 
 	
-	public static void takeInput()  {
+	public static boolean takeInput()  {
 		String start ="hell";
 		String end = "bell";
-//		System.out.println("Enter the Start word: ");
-//		Scanner scan = new Scanner(System.in);
-//		start = scan.next();
-//		System.out.println(start);
-//		System.out.println("Enter the End word: ");
-//		end = scan.next();
-//		System.out.println(end);
+		System.out.println("\nWelcome to Program Word Ladder! \nAll available paths as well as Frequency Distribution table of Steps have been calculated Already!");
+		System.out.println("\nMaximum Number of Steps Found: "+longestChain);
+		System.out.println("\nYou can enter start and end words of your choice instead of looking at all the outputs.");
+		System.out.println("Please Enter the Start word: ");
+		Scanner scan = new Scanner(System.in);
+		start = scan.next();
+		System.out.println("Please Enter the End word: ");
+		end = scan.next();
+		System.out.println("Your start word is: "+start+" -->");
+		System.out.println("Your end word is: --> "+end);
 
-		Ladder wordLadder = new Ladder(start, end); //saves start and end word in Ladder object
-
-		//check if both Strings are of equal length + if both exist in dictionary
+		//check if both Strings are of equal length 
 		if (start.length()== end.length()){
-			System.out.println("same length:valid");
+			 BFS(start, end);		
+			 return true;
 		}
+		
+		return false;
 		
 	}
 	
@@ -117,7 +114,7 @@ public class Operations {
          ObjectMapper mapper = new ObjectMapper(factory);
 	       JsonNode rootNode = null;
 	       
-	       System.out.println("in json parsing");
+	       System.out.println("\nParsing JSON...");
 		try {
 			rootNode = mapper.readTree(json);
 		} catch (JsonProcessingException e) {
@@ -181,7 +178,7 @@ public class Operations {
 	
 	
 	public static void printHashMap(){
-		  System.out.print("Result...");
+		  System.out.print("\nPrinting HashMap...\n");
 
 	       for (Entry<String, ArrayList<DictData>> entry  : dict.entrySet()) {
  		        System.out.print(entry.getKey()+" -----> ");
@@ -193,16 +190,20 @@ public class Operations {
 
  		    }
 
-//	       BFS("word","barn"); 
 	       calculateAllMinChains();
 	       findNoChainWords();
-	       calculateFrequencyDistribution();
+	       try {
+			calculateFrequencyDistribution();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	
 	
 	public static void displayGraph() throws InterruptedException{
-	    System.out.println("In display graph");
+	    System.out.println("\nDisplaying Graph in Background...");
 
 		JFrame frame = new JFrame();
 		frame.setSize(400, 400);
@@ -211,8 +212,6 @@ public class Operations {
 	    frame.setVisible(true);
 //	    System.out.println("graph: " + graph.toString());
 //	    System.out.println("edges of MABBLE: " + graph.edgesOf("RABBLE"));
-
-        //BFS("word", "barn");
 
 	}
 	
@@ -241,7 +240,7 @@ public class Operations {
 	}
 	
 	
-	public static void calculateFrequencyDistribution(){ //calculate Frequency Distribution of Chain lengths
+	public static void calculateFrequencyDistribution() throws IOException{ //calculate Frequency Distribution of Chain lengths
 		   Map<Integer, Integer> freqTable = new HashMap<Integer, Integer>();
 
          for (int i=0; i< pathLengths.size(); i++){
@@ -257,10 +256,10 @@ public class Operations {
  	    	        	 
          }
  	    System.out.println("\nFrequency Distribution Table for All Chain Lengths: ");
+         
+        printAndWriteToFile(freqTable);//prints frequency Table and writes to file
 
-         for (Map.Entry entry : freqTable.entrySet()) {
-        	    System.out.println("\n"+entry.getKey() + " : " + entry.getValue());
-         }
+         
 
 	}
 	
@@ -274,12 +273,27 @@ public class Operations {
 		Queue q = new LinkedList<String>();
 		
 		DictData current = null;
+		DictData destination = null;
+
 	    for(DictData index : graph.vertexSet()){
     	    if (index.getWord().compareTo(startNode) == 0){
-    	    	System.out.println("Starting Search From: " + index.getWord());
     	    	current = index;
     	    }
+    	    if (index.getWord().compareTo(endNode) == 0){
+    	    	destination = index;
+    	    }
+    	    	    
     	}
+	    
+	    
+	    if(current == null || destination== null){
+	    	System.out.println("Invalid word/words! Non-Existant in Dictionary Used");
+	    	return false;
+	    }
+	    else{
+	    	System.out.println("Start Node '"+ current.getWord()+"' found in Dictionary");
+	    	System.out.println("End Node '"+ destination.getWord()+"' found in Dictionary");
+	    }
 	    
 	    q.add(current);
 	    
@@ -351,5 +365,25 @@ public class Operations {
 	
 	return jsonFileData;
    }
+	
+	
+	
+	public static void printAndWriteToFile(Map<Integer, Integer> freqTable) throws IOException {
+		File fout = new File("FrequencyTable.txt");
+		FileOutputStream fos = new FileOutputStream(fout);
+	 
+		BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(fos));
+		
+		 bw.write("PathLength Frequency");
+	     bw.newLine();
+	 
+		for (Map.Entry entry : freqTable.entrySet()) {
+     	    System.out.println(entry.getKey() + " : " + entry.getValue());
+		    bw.write(entry.getKey()+" "+entry.getValue()+"\n");
+			bw.newLine();
+      }	 
+		bw.close();
+	}
+	
 
 }
