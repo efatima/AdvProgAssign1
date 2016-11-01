@@ -11,6 +11,7 @@ import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -45,11 +46,10 @@ public class Operations {
 
 	
 	public static boolean takeInput()  {
-		String start ="hell";
-		String end = "bell";
-		System.out.println("\nWelcome to Program Word Ladder! \nAll available paths as well as Frequency Distribution table of Steps have been calculated Already!");
-		System.out.println("\nMaximum Number of Steps Found: "+longestChain);
-		System.out.println("\nYou can enter start and end words of your choice instead of looking at all the outputs.");
+		String start =" ";
+		String end = " ";
+		System.out.println("\nWelcome to Program Word Ladder!");
+		System.out.println("\nYou can enter start and end words of your choice from the above list.");
 		System.out.println("Please Enter the Start word: ");
 		Scanner scan = new Scanner(System.in);
 		start = scan.next();
@@ -125,19 +125,12 @@ public class Operations {
 			e.printStackTrace();
 		}  
 
-//	       Iterator<Map.Entry<String,JsonNode>> fieldsIterator = rootNode.fields();
-//	       while (fieldsIterator.hasNext()) {
-//	       String [] test ={"hope", "pope", "nope", "pole", "set", "note", "post", "nest", "bet", "neighbour", "vest"};
-	       String [] test ={"word", "dare", "work", "barn", "dark", "ware", "wore", "worn"};
+	       Iterator<Map.Entry<String,JsonNode>> fieldsIterator = rootNode.fields();
+	       while (fieldsIterator.hasNext()) {
 
-	       for(int j=0; j<test.length; j++){
-
-//	           Map.Entry<String,JsonNode> field = fieldsIterator.next();
-//             System.out.println("Key: " + field.getKey() + "\tValue:" + field.getValue());
-//    	       DictData newNode = new DictData(field.getKey(), field.getValue());
-	           DictData newNode = new DictData(test[j], "blah blah");
+	           Map.Entry<String,JsonNode> field = fieldsIterator.next();
+    	       DictData newNode = new DictData(field.getKey(), field.getValue());
     	       
-//    	       String currentWord = test[j];
     	       String currentWord = newNode.getWord();
     	       graph.addVertex(newNode);
 
@@ -149,30 +142,14 @@ public class Operations {
     	    	   char[] word =   currentWord.toCharArray();
     	    	   word[i] = '_';
         	       
-        	        addToList(String.valueOf(word), newNode);
-//        	        addToList(String.valueOf(word), test[j]);
-    	    	   
+        	        addToList(String.valueOf(word), newNode); 	    	   
     	       }
+    	         	           	           
     	       
-    	     
-    	       
-    	       
-    	       
-	       }  
-    	     
-         
-    	       
-//	           System.out.println("Key: " + newNode.getWord() + "\tValue:" + newNode.getMeaning());
-               printHashMap();
-               try {
-				displayGraph();
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-
-	       }
-//	}
+	           System.out.println("Key: " + newNode.getWord() + "\tValue:" + newNode.getMeaning());               
+	     }
+	       
+	 }
 	
 	
 	
@@ -189,7 +166,12 @@ public class Operations {
 		            System.out.print(" \n");
 
  		    }
-
+		   try {
+			displayGraph();
+		} catch (InterruptedException e1) {
+			// TODO Auto-generated catch block
+			e1.printStackTrace();
+		}
 	       calculateAllMinChains();
 	       findNoChainWords();
 	       try {
@@ -255,8 +237,10 @@ public class Operations {
         	 }
  	    	        	 
          }
- 	    System.out.println("\nFrequency Distribution Table for All Chain Lengths: ");
          
+ 		System.out.println("\nMaximum Number of Steps Found: "+longestChain);
+
+ 	    System.out.println("\nFrequency Distribution Table for All Chain Lengths: ");
         printAndWriteToFile(freqTable);//prints frequency Table and writes to file
 
          
@@ -347,7 +331,8 @@ public class Operations {
 
 	public static String readJsonFile() throws JsonParseException, JsonMappingException, IOException{//Reads a JSON file, saves the data in the form of a string and returns it
 	   String line = null;
-	   String jsonFileName = "Dictionary.json";
+//	   String jsonFileName = "Dictionary.json";
+	   String jsonFileName = "testDictionary.json";
 	   String jsonFileData ="";
 	   InputStream input = new FileInputStream(jsonFileName);
 	   InputStreamReader reader = new InputStreamReader(input);

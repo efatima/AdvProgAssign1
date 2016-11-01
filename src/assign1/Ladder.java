@@ -1,6 +1,7 @@
 package assign1;
 
 import java.io.IOException;
+import java.util.Scanner;
 
 public class Ladder {	
 
@@ -13,7 +14,19 @@ public class Ladder {
 		if(sameLength == false){
 			System.out.println("Error! Both words need to be of same Length!");
 		}
-				
+		
+		System.out.println("Enter 'y' to calculate path for all Nodes, create Graph and to print Frequency Distribution Table: ");
+		Scanner scan = new Scanner(System.in);
+		String option = scan.nextLine();
+		
+		if(option.compareTo("y")==0){
+		    Operations.printHashMap();
+		    
+		}
+		else{
+			System.out.println("Exited..");
+		}
+						
        return;
 				
 	}
